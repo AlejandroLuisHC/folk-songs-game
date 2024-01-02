@@ -57,97 +57,52 @@ function App() {
         let bandName = document.querySelector<HTMLInputElement>("[name=band-name]")?.value;
         if (songData.band === solution.band) bandName = songData.band;
 
-        setSolution({
+        const newSolution = {
             name: songName!.toLowerCase(),
             band: bandName!.toLowerCase(),
-        });
-        setSolved([solution.name === songData.name, solution.band === songData.band]);
+        };
 
+        setSolution(newSolution);
+
+        // Check if the new solution is correct
+        setSolved([newSolution.name === songData.name, newSolution.band === songData.band]);
+
+        // Update level based on the solved state
         if (!solved[0] || !solved[1]) {
-            setLevel({
-                ...level,
-                level: level.level + 1,
-                seconds: level.time[level.level],
-            });
+            setLevel(prevLevel => ({
+                ...prevLevel,
+                level: prevLevel.level + 1,
+                seconds: prevLevel.time[prevLevel.level],
+            }));
         }
     }
+
+    console.log("Song name and band:", songData.name + " & " + songData.band);
 
     return (
         <>
             <div className="play-box">
-                <p>
-                    {songData.name} by {songData.band}
-                </p>
                 <button className="play-button" onClick={playPreview}>
                     PLAY THE SONG
                 </button>
             </div>
             <div className="level-box">
-                <p
-                    className={
-                        level.level > 1
-                            ? solved[0] && solved[1]
-                                ? "level-bubble-green"
-                                : solved[0] || solved[1]
-                                  ? "level-bubble-yellow"
-                                  : "level-bubble-red"
-                            : "level-bubble"
-                    }
-                >
-                    1
-                </p>
-                <p
-                    className={
-                        level.level > 2
-                            ? solved[0] && solved[1]
-                                ? "level-bubble-green"
-                                : solved[0] || solved[1]
-                                  ? "level-bubble-yellow"
-                                  : "level-bubble-red"
-                            : "level-bubble"
-                    }
-                >
-                    2
-                </p>
-                <p
-                    className={
-                        level.level > 3
-                            ? solved[0] && solved[1]
-                                ? "level-bubble-green"
-                                : solved[0] || solved[1]
-                                  ? "level-bubble-yellow"
-                                  : "level-bubble-red"
-                            : "level-bubble"
-                    }
-                >
-                    3
-                </p>
-                <p
-                    className={
-                        level.level > 4
-                            ? solved[0] && solved[1]
-                                ? "level-bubble-green"
-                                : solved[0] || solved[1]
-                                  ? "level-bubble-yellow"
-                                  : "level-bubble-red"
-                            : "level-bubble"
-                    }
-                >
-                    4
-                </p>
-                <p
-                    className={
-                        level.level > 5
-                            ? solved[0] && solved[1]
-                                ? "level-bubble-green"
-                                : solved[0] || solved[1]
-                                  ? "level-bubble-yellow"
-                                  : "level-bubble-red"
-                            : "level-bubble"
-                    }
-                >
-                    5
-                </p>
+                {[1, 2, 3, 4, 5].map(levelNumber => (
+                    <p
+                        key={levelNumber}
+                        className={
+                            level.level > levelNumber
+                                ? solved[0] && solved[1]
+                                    ? "level-bubble-green"
+                                    : solved[0] || solved[1]
+                                      ? "level-bubble-yellow"
+                                      : "level-bubble-red"
+                                : "level-bubble"
+                        }
+                    >
+                        {levelNumber}
+                    </p>
+                ))}
             </div>
             <form onSubmit={event => solve(event)} className="guess-box">
                 <p>Level: {level.level}</p>

@@ -8,7 +8,7 @@ const getAccessToken = async () => {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: "grant_type=client_credentials&client_id=52f7fd0717ba4545bd1491fe26f0fc80&client_secret=db0d5f2131864ccaa34ce73f26ce64b8",
+        body: `grant_type=client_credentials&client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&client_secret=${import.meta.env.VITE_SPOTIFY_CLIENT_SECRET}`,
     });
 
     const data = await response.json();

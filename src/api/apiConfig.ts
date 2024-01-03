@@ -16,11 +16,12 @@ const getAccessToken = async () => {
     return data.access_token;
 };
 
-const accessToken = await getAccessToken();
+export const createSpotifyApi = async () => {
+    const accessToken = await getAccessToken();
 
-export const spotifyApi = new SpotifyWebApi({
-    clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-    clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
-    accessToken: accessToken,
-});
-
+    return new SpotifyWebApi({
+        clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+        clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
+        accessToken,
+    });
+};

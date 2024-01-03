@@ -2,8 +2,12 @@ import {useEffect, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
 import {songsPlaylistFolkMetal} from "./api/getSong";
-import {generatePlaceholder} from "./helpers/generatePlaceholder";
 import "./style/app.css";
+import PlayButton from "./components/PlayButton";
+import Levels from "./components/Levels";
+import GuessForm from "./components/GuessForm";
+import Modal from "react-modal";
+import Instructions from "./components/Instuctions";
 
 function App() {
     const isMounted = useRef(false);
@@ -11,6 +15,7 @@ function App() {
     const [solution, setSolution] = useState({name: "", band: ""});
     const [audio, setAudio] = useState(new Audio());
     const [levelsState, setLevelsState] = useState(Array(5).fill("level-bubble"));
+    const [showModal, setShowModal] = useState(false);
     const [songData, setSongData] = useState({
         name: "",
         band: "",
@@ -84,6 +89,18 @@ function App() {
         }
     }, [level, solved]);
 
+    useEffect(() => {
+        const modalShownBefore = sessionStorage.getItem("modalShownBefore");
+        if (!modalShownBefore) {
+            setShowModal(true);
+            sessionStorage.setItem("modalShownBefore", "true");
+        }
+    }, []);
+
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
     function playPreview() {
         if (!audio.paused) {
             audio.pause();
@@ -146,90 +163,26 @@ function App() {
 
     return (
         <>
-            <div className="play-box">
-                <button className="play-button" onClick={playPreview}>
-                    PLAY THE SONG
-                </button>
-            </div>
-            <div className="level-box">
-                {levelsState.map((state, index) => (
-                    <p key={index} className={state}>
-                        {index + 1}
-                    </p>
-                ))}
-            </div>
-            <form onSubmit={event => solve(event)} className="guess-box">
-                {songData.name === solution.name && solution.name !== "" ? (
-                    <>
-                        {level.level === 5 && <p className="hint">Last chance!</p>}
-                        <p className="correct">Correct! The name of the song is {songData.name}</p>
-                    </>
-                ) : level.level > 5 ? (
-                    <p className="incorrect">The name of the song is {songData.name}. Try again!</p>
-                ) : level.level >= 4 && solved[0] === false ? (
-                    <>
-                        {level.level === 5 && <p className="hint">Last chance!</p>}
-                        <label htmlFor="song-name">Song name:</label>
-                        <input
-                            name="song-name"
-                            className="input-guess"
-                            placeholder={generatePlaceholder(songData.name)}
-                            autoComplete="off"
-                            onChange={e => setInputValues({...inputValues, songName: e.target.value})}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <label htmlFor="song-name">Song name:</label>
-                        <input
-                            name="song-name"
-                            className="input-guess"
-                            placeholder="Type your guess here"
-                            autoComplete="off"
-                            onChange={e => setInputValues({...inputValues, songName: e.target.value})}
-                        />
-                    </>
-                )}
-                {songData.band === solution.band && solution.band !== "" ? (
-                    <p className="correct">Correct! The name of the band is {songData.band}</p>
-                ) : level.level > 5 ? (
-                    <p className="incorrect">The name of the band is {songData.band}. Try again!</p>
-                ) : level.level >= 3 && solved[1] === false ? (
-                    <>
-                        <label htmlFor="band-name">Band name:</label>
-                        <input
-                            name="band-name"
-                            className="input-guess"
-                            placeholder="Type your guess here"
-                            autoComplete="off"
-                            onChange={e => setInputValues({...inputValues, bandName: e.target.value})}
-                        />
-                        <p className="hint">Psst! It starts with {songData.band[0].toUpperCase()}</p>
-                    </>
-                ) : (
-                    <>
-                        <label htmlFor="band-name">Band name:</label>
-                        <input
-                            name="band-name"
-                            className="input-guess"
-                            placeholder="Type your guess here"
-                            autoComplete="off"
-                            onChange={e => setInputValues({...inputValues, bandName: e.target.value})}
-                        />
-                    </>
-                )}
-                {level.level > 5 || (solved[0] && solved[1]) ? (
-                    <button onClick={() => window.location.reload()}>Next game</button>
-                ) : inputValues.songName === "" && inputValues.bandName === "" ? (
-                    <button type="submit" className="submit">
-                        Skip and add seconds
-                    </button>
-                ) : (
-                    <button type="submit" className="submit">
-                        Submit Guess
-                    </button>
-                )}
-            </form>
+            <PlayButton playPreview={playPreview} content={"PLAY SONG"} />
+            <Levels levelsState={levelsState} />
+            <GuessForm
+                solve={solve}
+                songData={songData}
+                solution={solution}
+                level={level}
+                solved={solved}
+                setInputValues={setInputValues}
+                inputValues={inputValues}
+            />
+
+            <Modal
+                className="modal-box"
+                isOpen={showModal}
+                onRequestClose={closeModal}
+                contentLabel="Game Instructions"
+            >
+                <Instructions closeModal={closeModal} />
+            </Modal>
         </>
     );
 }

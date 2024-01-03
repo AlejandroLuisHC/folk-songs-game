@@ -1,43 +1,65 @@
 import {useEffect, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
-import {songsPlaylistGrimner} from "./api/getSong";
+import {songsPlaylistFolkMetal} from "./api/getSong";
 import {generatePlaceholder} from "./helpers/generatePlaceholder";
 import "./style/app.css";
 
 function App() {
+    const isMounted = useRef(false);
+    const [solved, setSolved] = useState([false, false]);
+    const [solution, setSolution] = useState({name: "", band: ""});
+    const [audio, setAudio] = useState(new Audio());
+    const [levelsState, setLevelsState] = useState(Array(5).fill("level-bubble"));
     const [songData, setSongData] = useState({
         name: "",
         band: "",
         previewUrl: "",
     });
-    const [solution, setSolution] = useState({name: "", band: ""});
-    const [levelsState, setLevelsState] = useState(Array(5).fill("level-bubble"));
     const [inputValues, setInputValues] = useState({
         songName: "",
         bandName: "",
     });
-    const [solved, setSolved] = useState([false, false]);
-    const [audio, setAudio] = useState(new Audio());
     const [level, setLevel] = useState({
         time: [1000, 2500, 6000, 12000, 30000],
         level: 1,
     });
-    const isMounted = useRef(false);
+
+    const {data, status} = useQuery({
+        queryKey: ["songs"],
+        queryFn: async () => {
+            const cachedData = localStorage.getItem("songs");
+
+            if (cachedData) {
+                const parsedData = JSON.parse(cachedData);
+                return parsedData;
+            } else {
+                const freshData = await songsPlaylistFolkMetal();
+                localStorage.setItem("songs", JSON.stringify(freshData));
+                return freshData;
+            }
+        },
+    });
 
     useEffect(() => {
         isMounted.current = true;
     }, []);
 
-    const {data, status} = useQuery({
-        queryKey: ["songs"],
-        queryFn: async () => await songsPlaylistGrimner(),
-    });
-
     useEffect(() => {
         if (data) {
-            const rand = Math.floor(Math.random() * 50);
-            const randomSong = data.body.items[rand].track;
+            localStorage.setItem("songs", JSON.stringify(data));
+            const rand = Math.floor(Math.random() * data.length);
+            let randomSong = data[rand].track;
+
+            const usedSongs = JSON.parse(localStorage.getItem("usedSongs") || "[]");
+
+            while (usedSongs.includes(randomSong?.id)) {
+                const rand = Math.floor(Math.random() * data.length);
+                randomSong = data[rand].track;
+            }
+
+            usedSongs.push(randomSong?.id);
+            localStorage.setItem("usedSongs", JSON.stringify(usedSongs));
             setSongData({
                 name: randomSong?.name.toLowerCase() || "",
                 band: randomSong?.artists[0].name.toLowerCase() || "",
@@ -90,8 +112,8 @@ function App() {
         if (songData.band === solution.band) bandName = songData.band;
 
         const newSolution = {
-            name: songName!.toLowerCase(),
-            band: bandName!.toLowerCase(),
+            name: songName!.toLowerCase().trim(),
+            band: bandName!.toLowerCase().trim(),
         };
         setSolution(newSolution);
         setSolved([newSolution.name === songData.name, newSolution.band === songData.band]);

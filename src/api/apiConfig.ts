@@ -1,6 +1,9 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
-export const spotifyApi = new SpotifyWebApi();
+export const spotifyApi = new SpotifyWebApi({
+    clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+    clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
+});
 
 const getAccessToken = async () => {
     const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -8,7 +11,9 @@ const getAccessToken = async () => {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: `grant_type=client_credentials&client_id=${import.meta.env.VITE_SPOTIFY_CLIENT_ID}&client_secret=${import.meta.env.VITE_SPOTIFY_CLIENT_SECRET}`,
+        body: `grant_type=client_credentials&client_id=${
+            import.meta.env.VITE_SPOTIFY_CLIENT_ID
+        }&client_secret=${import.meta.env.VITE_SPOTIFY_CLIENT_SECRET}`,
     });
 
     const data = await response.json();

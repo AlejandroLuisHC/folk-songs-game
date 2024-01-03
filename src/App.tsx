@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {songsPlaylistDailyMix1} from "./api/getSong";
 import "./style/app.css";
-import { useQuery } from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
 
 function App() {
@@ -74,10 +74,13 @@ function App() {
         setAudio(newAudio);
         newAudio.play();
 
-        setTimeout(() => {
-            newAudio.pause();
-            newAudio.currentTime = 0;
-        }, level.time[level.level - 1]);
+        setTimeout(
+            () => {
+                newAudio.pause();
+                newAudio.currentTime = 0;
+            },
+            level.time[level.level - 1],
+        );
     }
 
     function solve(event: React.FormEvent<HTMLFormElement>) {
@@ -109,14 +112,7 @@ function App() {
     console.log("Song name and band:", songData.name + " & " + songData.band);
 
     if (status === "pending")
-        return <DotLoader
-            color="#1a1a1a"
-            loading={true}
-            height={80}
-            width={8}
-            radius={30}
-            margin={8}
-        />;
+        return <DotLoader color="#1a1a1a" loading={true} height={80} width={8} radius={30} margin={8} />;
 
     return (
         <>

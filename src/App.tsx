@@ -111,8 +111,9 @@ function App() {
 
     console.log("Song name and band:", songData.name + " & " + songData.band);
 
-    if (status === "pending")
-        return <DotLoader color="#1a1a1a" />;
+    if (status === "pending") return <DotLoader color="#1a1a1a" />;
+
+    if (status === "error") return <p className="errorP">Error :(</p>;
 
     return (
         <>

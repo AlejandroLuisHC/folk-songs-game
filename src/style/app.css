@@ -99,6 +99,12 @@
     font-weight: bold;
 }
 
+.errorP {
+    color: #a91a1a;
+    font-weight: bold;
+    font-size: 2em;
+}
+
 @media (prefers-color-scheme: light) {
     .level-box {
         border: 1px solid #1a1a1a;

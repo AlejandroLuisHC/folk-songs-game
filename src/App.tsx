@@ -15,6 +15,7 @@ function App() {
         name: "",
         band: "",
         previewUrl: "",
+        id: "",
     });
     const [inputValues, setInputValues] = useState({
         songName: "",
@@ -52,18 +53,18 @@ function App() {
             let randomSong = data[rand].track;
 
             const usedSongs = JSON.parse(localStorage.getItem("usedSongs") || "[]");
-
-            while (usedSongs.includes(randomSong?.id)) {
-                const rand = Math.floor(Math.random() * data.length);
-                randomSong = data[rand].track;
+            if (usedSongs) {
+                while (usedSongs.includes(randomSong?.id)) {
+                    const rand = Math.floor(Math.random() * data.length);
+                    randomSong = data[rand].track;
+                }
             }
 
-            usedSongs.push(randomSong?.id);
-            localStorage.setItem("usedSongs", JSON.stringify(usedSongs));
             setSongData({
                 name: randomSong?.name.toLowerCase() || "",
                 band: randomSong?.artists[0].name.toLowerCase() || "",
                 previewUrl: randomSong?.preview_url || "",
+                id: randomSong?.id || "",
             });
         }
     }, [data]);
@@ -123,6 +124,12 @@ function App() {
                 ...prevLevel,
                 level: prevLevel.level + 1,
             }));
+        }
+
+        if (level.level === 5 || (solved[0] && solved[1])) {
+            const usedSongs = JSON.parse(localStorage.getItem("usedSongs") || "[]");
+            usedSongs.push(songData.id);
+            localStorage.setItem("usedSongs", JSON.stringify(usedSongs));
         }
     }
 

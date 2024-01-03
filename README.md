@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/alejandroluishc/folk-songs-game/badge)](https://www.codefactor.io/repository/github/alejandroluishc/folk-songs-game)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 # Song Guessing Game
 
 This project is a web-based song guessing game where users can listen to song previews and guess the name of the song and the band.

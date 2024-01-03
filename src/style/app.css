@@ -2,9 +2,9 @@
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    border: 1px solid #f9f9f9;
     padding: 0.3em 0.6em;
     border-radius: 8px;
+    margin-bottom: 20px;
 }
 
 .level-bubble {
@@ -65,6 +65,7 @@
     padding: 0.6em 1.2em;
     font-size: 1em;
     font-weight: 500;
+    letter-spacing: 3px;    
     font-family: inherit;
     margin: 0 0.3em;
     background-color: #1a1a1a;
@@ -74,8 +75,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: 1.75em;
+    font-weight: bolder;
     justify-content: space-evenly;
-    padding: 1em;
+    padding: 1.2em;
+    padding-bottom: 0;
 }
 
 .play-button {
@@ -87,6 +91,17 @@
     font-family: inherit;
     margin: 0 0.3em;
     background-color: #1a1a1a;
+}
+
+.hint {
+    color: #a9a91a;
+    font-size: small;
+    font-weight: light;
+    margin: -8px;
+}
+
+.submit {
+    margin-top: 15px;
 }
 
 .correct {

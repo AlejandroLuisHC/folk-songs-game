@@ -3,6 +3,7 @@ import {songsPlaylistGrimner} from "./api/getSong";
 import "./style/app.css";
 import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
+import {generatePlaceholder} from "./helpers/generatePlaceholder";
 
 function App() {
     const [songData, setSongData] = useState({
@@ -21,7 +22,7 @@ function App() {
     const [solved, setSolved] = useState([false, false]);
     const [audio, setAudio] = useState(new Audio());
     const [level, setLevel] = useState({
-        time: [1000, 2000, 5000, 10000, 25000],
+        time: [1000, 2500, 6000, 12000, 30000],
         level: 1,
     });
     const isMounted = useRef(false);
@@ -34,8 +35,6 @@ function App() {
         queryKey: ["songs"],
         queryFn: async () => await songsPlaylistGrimner(),
     });
-
-    console.log("data", data);
 
     useEffect(() => {
         if (data) {
@@ -95,13 +94,9 @@ function App() {
             name: songName!.toLowerCase(),
             band: bandName!.toLowerCase(),
         };
-
         setSolution(newSolution);
-
-        // Check if the new solution is correct
         setSolved([newSolution.name === songData.name, newSolution.band === songData.band]);
 
-        // Update level based on the solved state
         if (!solved[0] || !solved[1]) {
             setLevel(prevLevel => ({
                 ...prevLevel,
@@ -114,7 +109,13 @@ function App() {
 
     if (status === "pending") return <DotLoader color="#1a1a1a" />;
 
-    if (status === "error") return <p className="errorP">Error :(</p>;
+    if (status === "error")
+        return (
+            <>
+                <p className="errorP">Unexpected error :(</p>
+                <button onClick={() => window.location.reload()}>Try reloading</button>
+            </>
+        );
 
     return (
         <>
@@ -135,6 +136,17 @@ function App() {
                     <p className="correct">Correct! The name of the song is {songData.name}</p>
                 ) : level.level > 5 ? (
                     <p className="incorrect">The name of the song is {songData.name}. Try again!</p>
+                ) : level.level >= 4 && solved[0] === false ? (
+                    <>
+                        <p className="hint">Last chance!</p>
+                        <label htmlFor="song-name">Song name:</label>
+                        <input
+                            name="song-name"
+                            className="input-guess"
+                            placeholder={generatePlaceholder(songData.name)}
+                            autoComplete="off"
+                        />
+                    </>
                 ) : (
                     <>
                         <label htmlFor="song-name">Song name:</label>
@@ -150,6 +162,17 @@ function App() {
                     <p className="correct">Correct! The name of the band is {songData.band}</p>
                 ) : level.level > 5 ? (
                     <p className="incorrect">The name of the band is {songData.band}. Try again!</p>
+                ) : level.level >= 3 && solved[1] === false ? (
+                    <>
+                        <label htmlFor="band-name">Band name:</label>
+                        <input
+                            name="band-name"
+                            className="input-guess"
+                            placeholder="Type your guess here"
+                            autoComplete="off"
+                        />
+                        <p className="hint">Psst! It starts with {songData.band[0].toUpperCase()}</p>
+                    </>
                 ) : (
                     <>
                         <label htmlFor="band-name">Band name:</label>
@@ -162,9 +185,11 @@ function App() {
                     </>
                 )}
                 {level.level > 5 || (solved[0] && solved[1]) ? (
-                    <button onClick={() => window.location.reload()}>Next game</button>
+                    <button onClick={() =>window.location.reload()}>Next game</button>
                 ) : (
-                    <button type="submit">Submit Guess</button>
+                    <button type="submit" className="submit">
+                        Submit Guess
+                    </button>
                 )}
             </form>
         </>

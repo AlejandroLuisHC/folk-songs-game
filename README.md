@@ -1,30 +1,73 @@
-# React + TypeScript + Vite
+# Song Guessing Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a web-based song guessing game where users can listen to song previews and guess the name of the song and the band.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Dynamic song selection from a Spotify playlist.
+- Progressive difficulty levels.
+- Real-time feedback on correct and incorrect guesses.
+- Play/pause functionality for song previews.
+- Interactive user interface.
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (v. 18)
+- [pnpm](https://pnpm.io/)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/AlejandroLuisHC/folk-songs-game.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Change into the project directory:
+
+3. Install dependencies:
+
+```bash
+pnpm install
+```
+
+## Usage
+
+1. Obtain Spotify API credentials (client ID and client secret) and update the .env file.
+
+2. Run the development server:
+```bash
+pnpm dev
+```
+
+3. Open your browser and navigate to `http://localhost:5173` to play the game.
+
+## Technologies Used
+
+- [React](https://react.dev/)
+- [React Query](https://tanstack.com/query/v3/)
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api)
+- [Vite](https://vitejs.dev/)
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or pull requests.
+
+## License
+
+This project is licensed under the MIT License.

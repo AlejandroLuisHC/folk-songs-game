@@ -8,3 +8,8 @@ export const songsPlaylistDailyMix1 = async () => {
     const spotifyApi = await createSpotifyApi()
     return spotifyApi.getPlaylistTracks(import.meta.env.VITE_DAILY_MIX_1, {limit: 50});
 }
+
+export const songsPlaylistGrimner = async () => {
+    const spotifyApi = await createSpotifyApi()
+    return spotifyApi.getPlaylistTracks(import.meta.env.VITE_PLAYLIST_GRIMNER, {limit: 50});
+}

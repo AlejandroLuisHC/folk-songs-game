@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {songsPlaylistDailyMix1} from "./api/getSong";
+import {songsPlaylistGrimner} from "./api/getSong";
 import "./style/app.css";
 import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
@@ -31,8 +31,8 @@ function App() {
     }, []);
 
     const {data, status} = useQuery({
-        queryKey: ["songsPlaylistDailyMix1"],
-        queryFn: async () => await songsPlaylistDailyMix1(),
+        queryKey: ["songs"],
+        queryFn: async () => await songsPlaylistGrimner(),
     });
 
     console.log("data", data);
@@ -74,13 +74,14 @@ function App() {
         setAudio(newAudio);
         newAudio.play();
 
-        setTimeout(
-            () => {
-                newAudio.pause();
-                newAudio.currentTime = 0;
-            },
-            level.time[level.level - 1],
-        );
+        if (solved[0] !== true || solved[1] !== true)
+            setTimeout(
+                () => {
+                    newAudio.pause();
+                    newAudio.currentTime = 0;
+                },
+                level.time[level.level - 1],
+            );
     }
 
     function solve(event: React.FormEvent<HTMLFormElement>) {
@@ -137,7 +138,12 @@ function App() {
                 ) : (
                     <>
                         <label htmlFor="song-name">Song name:</label>
-                        <input name="song-name" className="input-guess" placeholder="Type your guess here" />
+                        <input
+                            name="song-name"
+                            className="input-guess"
+                            placeholder="Type your guess here"
+                            autoComplete="off"
+                        />
                     </>
                 )}
                 {songData.band === solution.band && solution.band !== "" ? (
@@ -147,7 +153,12 @@ function App() {
                 ) : (
                     <>
                         <label htmlFor="band-name">Band name:</label>
-                        <input name="band-name" className="input-guess" placeholder="Type your guess here" />
+                        <input
+                            name="band-name"
+                            className="input-guess"
+                            placeholder="Type your guess here"
+                            autoComplete="off"
+                        />
                     </>
                 )}
                 {level.level > 5 || (solved[0] && solved[1]) ? (

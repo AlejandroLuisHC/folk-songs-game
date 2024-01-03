@@ -63,6 +63,7 @@ pnpm dev
 - [React Query](https://tanstack.com/query/v3/)
 - [Spotify Web API](https://developer.spotify.com/documentation/web-api)
 - [Vite](https://vitejs.dev/)
+- [Vercel](https://vercel.com/)
 
 ## Contributing
 

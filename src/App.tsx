@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import DotLoader from "react-spinners/DotLoader";
-import {songsPlaylistGrimner} from "./api/getSong";
+import {songsPlaylistSpanish} from "./api/getSong";
 import {generatePlaceholder} from "./helpers/generatePlaceholder";
 import "./style/app.css";
 
@@ -31,7 +31,7 @@ function App() {
 
     const {data, status} = useQuery({
         queryKey: ["songs"],
-        queryFn: async () => await songsPlaylistGrimner(),
+        queryFn: async () => await songsPlaylistSpanish(),
     });
 
     useEffect(() => {

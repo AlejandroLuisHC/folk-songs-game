@@ -13,3 +13,8 @@ export const songsPlaylistGrimner = async () => {
     const spotifyApi = await createSpotifyApi()
     return spotifyApi.getPlaylistTracks(import.meta.env.VITE_PLAYLIST_GRIMNER, {limit: 50});
 }
+
+export const songsPlaylistSpanish = async () => {
+    const spotifyApi = await createSpotifyApi()
+    return spotifyApi.getPlaylistTracks(import.meta.env.VITE_PLAYLIST_SPANISH_CLASSICS, {limit: 50});
+}

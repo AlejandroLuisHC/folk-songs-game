@@ -1,10 +1,5 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
-export const spotifyApi = new SpotifyWebApi({
-    clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-    clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
-});
-
 const getAccessToken = async () => {
     const response = await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
@@ -17,10 +12,15 @@ const getAccessToken = async () => {
     });
 
     const data = await response.json();
+    console.log('accessToken', data.access_token)
     return data.access_token;
 };
 
-(async () => {
-    const accessToken = await getAccessToken();
-    spotifyApi.setAccessToken(accessToken);
-})();
+const accessToken = await getAccessToken();
+
+export const spotifyApi = new SpotifyWebApi({
+    clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+    clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
+    accessToken: accessToken,
+});
+

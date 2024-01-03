@@ -1,38 +1,68 @@
-import {useEffect, useState} from "react";
-import {songsFolkMetal} from "./api/getSong";
+import {useEffect, useRef, useState} from "react";
+import {songsPlaylistDailyMix1} from "./api/getSong";
 import "./style/app.css";
+import { useQuery } from "@tanstack/react-query";
+import DotLoader from "react-spinners/DotLoader";
 
 function App() {
-    const [songData, setSongData] = useState({name: "", band: "", previewUrl: ""});
+    const [songData, setSongData] = useState({
+        name: "",
+        band: "",
+        previewUrl: "",
+    });
     const [solution, setSolution] = useState({name: "", band: ""});
+    const [levelsState, setLevelsState] = useState([
+        "level-bubble",
+        "level-bubble",
+        "level-bubble",
+        "level-bubble",
+        "level-bubble",
+    ]);
     const [solved, setSolved] = useState([false, false]);
     const [audio, setAudio] = useState(new Audio());
     const [level, setLevel] = useState({
         time: [1000, 2000, 5000, 10000, 25000],
         level: 1,
-        seconds: 1000,
     });
+    const isMounted = useRef(false);
 
     useEffect(() => {
-        async function getSong() {
-            try {
-                const songData = await songsFolkMetal();
-                if (!songData) throw new Error("No song data");
-
-                const rand = Math.floor(Math.random() * songData.body.tracks!.items.length);
-                const randomSong = songData.body.tracks?.items[rand];
-                if (!randomSong) throw new Error("No random song");
-                setSongData({
-                    name: randomSong.name.toLowerCase(),
-                    band: randomSong.artists[0].name.toLowerCase(),
-                    previewUrl: randomSong.preview_url!,
-                });
-            } catch (error) {
-                console.error("Error fetching or setting song data:", error);
-            }
-        }
-        getSong();
+        isMounted.current = true;
     }, []);
+
+    const {data, status} = useQuery({
+        queryKey: ["songsPlaylistDailyMix1"],
+        queryFn: async () => await songsPlaylistDailyMix1(),
+    });
+
+    console.log("data", data);
+
+    useEffect(() => {
+        if (data) {
+            const rand = Math.floor(Math.random() * 50);
+            const randomSong = data.body.items[rand].track;
+            setSongData({
+                name: randomSong!.name.toLowerCase(),
+                band: randomSong!.artists[0].name.toLowerCase(),
+                previewUrl: randomSong!.preview_url!,
+            });
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (isMounted.current) {
+            setLevelsState(prev => {
+                const newState = [...prev];
+                newState[level.level - 2] =
+                    solved[0] && solved[1]
+                        ? "level-bubble-green"
+                        : solved[0] || solved[1]
+                          ? "level-bubble-yellow"
+                          : "level-bubble-red";
+                return newState;
+            });
+        }
+    }, [level, solved]);
 
     function playPreview() {
         if (!audio.paused) {
@@ -47,7 +77,7 @@ function App() {
         setTimeout(() => {
             newAudio.pause();
             newAudio.currentTime = 0;
-        }, level.seconds);
+        }, level.time[level.level - 1]);
     }
 
     function solve(event: React.FormEvent<HTMLFormElement>) {
@@ -72,12 +102,21 @@ function App() {
             setLevel(prevLevel => ({
                 ...prevLevel,
                 level: prevLevel.level + 1,
-                seconds: prevLevel.time[prevLevel.level],
             }));
         }
     }
 
     console.log("Song name and band:", songData.name + " & " + songData.band);
+
+    if (status === "pending")
+        return <DotLoader
+            color="#1a1a1a"
+            loading={true}
+            height={80}
+            width={8}
+            radius={30}
+            margin={8}
+        />;
 
     return (
         <>
@@ -87,35 +126,27 @@ function App() {
                 </button>
             </div>
             <div className="level-box">
-                {[1, 2, 3, 4, 5].map(levelNumber => (
-                    <p
-                        key={levelNumber}
-                        className={
-                            level.level > levelNumber
-                                ? solved[0] && solved[1]
-                                    ? "level-bubble-green"
-                                    : solved[0] || solved[1]
-                                      ? "level-bubble-yellow"
-                                      : "level-bubble-red"
-                                : "level-bubble"
-                        }
-                    >
-                        {levelNumber}
-                    </p>
-                ))}
+                <p className={levelsState[0]}>1</p>
+                <p className={levelsState[1]}>2</p>
+                <p className={levelsState[2]}>3</p>
+                <p className={levelsState[3]}>4</p>
+                <p className={levelsState[4]}>5</p>
             </div>
             <form onSubmit={event => solve(event)} className="guess-box">
-                <p>Level: {level.level}</p>
-                {songData.name === solution.name ? (
+                {songData.name === solution.name && solution.name !== "" ? (
                     <p className="correct">Correct! The name of the song is {songData.name}</p>
+                ) : level.level > 5 ? (
+                    <p className="incorrect">The name of the song is {songData.name}. Try again!</p>
                 ) : (
                     <>
                         <label htmlFor="song-name">Song name:</label>
                         <input name="song-name" className="input-guess" placeholder="Type your guess here" />
                     </>
                 )}
-                {songData.band === solution.band ? (
+                {songData.band === solution.band && solution.band !== "" ? (
                     <p className="correct">Correct! The name of the band is {songData.band}</p>
+                ) : level.level > 5 ? (
+                    <p className="incorrect">The name of the band is {songData.band}. Try again!</p>
                 ) : (
                     <>
                         <label htmlFor="band-name">Band name:</label>

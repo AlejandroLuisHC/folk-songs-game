@@ -161,8 +161,6 @@ function App() {
         );
     }
 
-console.log('songData', songData)
-
     return (
         <>
             {solved[0] === true && solved[1] === true && (

@@ -125,9 +125,9 @@ function App() {
     function solve(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         let songName = document.querySelector<HTMLInputElement>("[name=song-name]")?.value;
-        if (songData.name === solution.name) songName = songData.name;
+        if (solved[0]) songName = songData.name;
         let bandName = document.querySelector<HTMLInputElement>("[name=band-name]")?.value;
-        if (songData.band === solution.band) bandName = songData.band;
+        if (solved[1]) bandName = songData.band;
 
         const newSolution = {
             name: songName!.toLowerCase().trim(),
@@ -161,8 +161,19 @@ function App() {
         );
     }
 
+console.log('songData', songData)
+
     return (
         <>
+            {solved[0] === true && solved[1] === true && (
+                <div>
+                    <img
+                        src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGdmcWE0aHk3ZXFwbDU1cnZubXgzNGxiYjFqbGM3N3R6MWtjejUxOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5j5ZLtybC9q9avWqX8/giphy.gif"
+                        alt="capybara dancing"
+                        className="capybara-dancing"
+                    />
+                </div>
+            )}
             <PlayButton playPreview={playPreview} content={"PLAY SONG"} />
             <Levels levelsState={levelsState} />
             <GuessForm

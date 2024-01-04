@@ -19,9 +19,9 @@ const GuessForm = ({
 }) => {
     return (
         <form onSubmit={event => solve(event)} className="guess-box">
-            {songData.name === solution.name && solution.name !== "" ? (
+            {solved[0] && solution.name !== "" ? (
                 <>
-                    {level.level === 5 && <p className="hint">Last chance!</p>}
+                    {!solved[1] && level.level === 5 && <p className="hint">Last chance!</p>}
                     <p className="correct">Correct! The name of the song is {songData.name}</p>
                 </>
             ) : level.level > 5 ? (
@@ -54,7 +54,7 @@ const GuessForm = ({
                 <p className="correct">Correct! The name of the band is {songData.band}</p>
             ) : level.level > 5 ? (
                 <p className="incorrect">The name of the band is {songData.band}. Try again!</p>
-            ) : level.level >= 3 && solved[1] === false ? (
+            ) : level.level >= 3 && !solved[1] ? (
                 <>
                     <label htmlFor="band-name">Band name:</label>
                     <input

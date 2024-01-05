@@ -57,6 +57,11 @@ function App() {
             const rand = Math.floor(Math.random() * data.length);
             let randomSong = data[rand].track;
 
+            while (!randomSong.preview_url) {
+                const rand = Math.floor(Math.random() * data.length);
+                randomSong = data[rand].track;
+            }
+
             const usedSongs = JSON.parse(localStorage.getItem("usedSongs") || "[]");
             if (usedSongs) {
                 while (usedSongs.includes(randomSong?.id)) {

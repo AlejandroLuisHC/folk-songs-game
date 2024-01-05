@@ -34,14 +34,14 @@ function App() {
     const {data, status} = useQuery({
         queryKey: ["songs"],
         queryFn: async () => {
-            const cachedData = localStorage.getItem("songs");
+            const cachedData = sessionStorage.getItem("songs");
 
             if (cachedData) {
                 const parsedData = JSON.parse(cachedData);
                 return parsedData;
             } else {
                 const freshData = await songsPlaylistFolkMetal();
-                localStorage.setItem("songs", JSON.stringify(freshData));
+                sessionStorage.setItem("songs", JSON.stringify(freshData));
                 return freshData;
             }
         },
@@ -53,7 +53,7 @@ function App() {
 
     useEffect(() => {
         if (data) {
-            localStorage.setItem("songs", JSON.stringify(data));
+            sessionStorage.setItem("songs", JSON.stringify(data));
             const rand = Math.floor(Math.random() * data.length);
             let randomSong = data[rand].track;
 
